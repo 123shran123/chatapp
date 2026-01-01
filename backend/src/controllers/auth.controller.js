@@ -55,9 +55,10 @@ export const signup=async(req,res)=>{
        if(newUser){
         // Issue an auth token for the newly created user.
         // Common implementation sets an httpOnly cookie on the response.
-        generateToken(newUser._id,res);
-        // Persist the user to the database
-        await newUser.save();
+       
+        // Persist the user to the database first then issue auth cookie
+        const saveduser=await newUser.save();
+        generateToken(saveduser._id,res);
         // Respond with created status and non-sensitive user details
         res.status(201).json({
             id:newUser._id,
